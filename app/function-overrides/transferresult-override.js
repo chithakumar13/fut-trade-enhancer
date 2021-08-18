@@ -20,6 +20,47 @@ const appendDuplicateTag = (resourceId, rootElement) => {
   }
 };
 
+const formRequestPayLoad = (e, platform) => {
+  const {
+    id: marketId,
+    resourceId,
+    _auction: { buyNowPrice, tradeId: auctionId, expires: expiresOn },
+    _metaData: { id: assetId, skillMoves, weakFoot } = {},
+    _attributes,
+    _staticData: { firstName, knownAs, lastName, name } = {},
+    nationId,
+    leagueId,
+    type,
+  } = e.getData();
+
+  const expireDate = new Date();
+  expireDate.setSeconds(expireDate.getSeconds() + expiresOn);
+  const trackPayLoad = {
+    resourceId,
+    price: buyNowPrice,
+    expiresOn: expireDate,
+    marketId,
+    platform,
+    type,
+    auctionId,
+    assetId,
+    year: 21,
+  };
+  const playerPayLoad = {
+    _id: resourceId,
+    nationId,
+    leagueId,
+    staticData: { firstName, knownAs, lastName, name },
+    skillMoves,
+    weakFoot,
+    assetId,
+    attributes: _attributes,
+    year: 21,
+  };
+
+  return { trackPayLoad, playerPayLoad };
+};
+
 export const transferResultOverride = () => {
   UTPaginatedItemListView.prototype._renderItems = function (o) {
     const n = this;
@@ -33,51 +74,26 @@ export const transferResultOverride = () => {
           o === ((t = e.getData()) === null || void 0 === t ? void 0 : t.id);
         e.render(i);
         const rootElement = jQuery(e.getRootElement());
+
         const {
-          id: marketId,
-          resourceId,
-          _auction: { buyNowPrice, tradeId: auctionId, expires: expiresOn },
-          _metaData: { id: assetId, skillMoves, weakFoot },
-          _attributes,
-          _staticData: { firstName, knownAs, lastName, name },
-          nationId,
-          leagueId,
           type,
+          contract,
+          resourceId,
+          _auction: { buyNowPrice },
         } = e.getData();
+
         const retryCount = 5;
         const auctionElement = rootElement.find(".auction");
-        const expireDate = new Date();
-        expireDate.setSeconds(expireDate.getSeconds() + expiresOn);
-        const trackPayLoad = {
-          resourceId,
-          price: buyNowPrice,
-          expiresOn: expireDate,
-          marketId,
-          platform,
-          type,
-          auctionId,
-          assetId,
-          year: 21,
-        };
-        const playerPayLoad = {
-          _id: resourceId,
-          nationId,
-          leagueId,
-          staticData: { firstName, knownAs, lastName, name },
-          skillMoves,
-          weakFoot,
-          assetId,
-          attributes: _attributes,
-          year: 21,
-        };
-        rootElement
-          .find(".ut-item-player-status--loan")
-          .text(e.getData().contract);
         if (
           auctionElement &&
           type === "player" &&
           !auctionElement.attr("style")
         ) {
+          rootElement.find(".ut-item-player-status--loan").text(contract);
+          const { trackPayLoad, playerPayLoad } = formRequestPayLoad(
+            e,
+            platform
+          );
           auctionPrices.push(trackPayLoad);
           players.push(playerPayLoad);
           appendDuplicateTag(resourceId, rootElement);
