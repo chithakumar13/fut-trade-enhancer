@@ -37,8 +37,8 @@
 - [Installation](#installation)
 - [Prerequisites](#prerequisites)
 - [Features](#features)
-- [Roadmap](#Roadmap)
-- [Developer Guide](#Developer-Guide)
+- [Roadmap](#roadmap)
+- [DeveloperGuide](#developerguide)
 - [Contributing](#contributing)
 - [Contact](#contact)
 
@@ -63,22 +63,21 @@
 
 - Download clubs players as csv.
 
-![.](demos/Club Download.gif)
+![](demos/Club%20Download.gif)
 
 - Enhanced Transfer Search Results
-
   - Compact View
   - Bargain Highlighting
   - Futbin Price
   - Club player indicator
 
-![.](demos/Enhanced Transfer Result.gif)
+![](demos/Enhanced%20Transfer%20Result.gif)
 
 - Autofill sbc from Futbin solutions(beta)
 
-![.](demos/Auto Sbc.gif)
+![](demos/Auto%20Sbc.gif)
 
-<!-- ROADMAP -->
+<!-- roadmap -->
 
 ## Roadmap
 
@@ -93,9 +92,9 @@ If you are looking for help or any new feature request, join our discord group
 
 <a href="https://discord.gg/cktHYmp">Join</a>
 
-<!-- DevGuide -->
+<!-- developerguide -->
 
-## Developer-Guide
+## DeveloperGuide
 
 <a href="https://discord.gg/AHqdCWRw69">Join this discord channel</a>
 
