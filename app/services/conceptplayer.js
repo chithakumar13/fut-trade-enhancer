@@ -1,32 +1,32 @@
-import { wait } from '../utils/commonUtil'
+import { wait } from "../utils/commonUtil";
 
 export const getConceptPlayers = function (playerId) {
   return new Promise((resolve, reject) => {
-    const searchCriteria = new viewmodels.BucketedItemSearch().searchCriteria
+    const searchCriteria = new viewmodels.BucketedItemSearch().searchCriteria;
     if (playerId) {
-      searchCriteria.defId = [playerId]
+      searchCriteria.defId = [playerId];
     }
-    const gatheredPlayers = []
+    const gatheredPlayers = [];
 
     const getAllConceptPlayers = () => {
       searchConceptPlayers(searchCriteria).observe(
         this,
         async function (sender, response) {
-          gatheredPlayers.push(...response.data.items)
+          gatheredPlayers.push(...response.data.items);
           if (response.status !== 400 && !response.data.endOfList) {
-            searchCriteria.offset += searchCriteria.count
-            await wait(1)
-            getAllConceptPlayers()
+            searchCriteria.offset += searchCriteria.count;
+            await wait(1);
+            getAllConceptPlayers();
           } else {
-            resolve(gatheredPlayers)
+            resolve(gatheredPlayers);
           }
         }
-      )
-    }
-    getAllConceptPlayers()
-  })
-}
+      );
+    };
+    getAllConceptPlayers();
+  });
+};
 
 const searchConceptPlayers = (searchCriteria) => {
-  return services.Item.searchConceptItems(searchCriteria)
-}
+  return services.Item.searchConceptItems(searchCriteria);
+};

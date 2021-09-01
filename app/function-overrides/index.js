@@ -8,6 +8,9 @@ import { overrideStyle } from "./cssoverrides";
 import { sbcViewOverride } from "./sbcview-override";
 import { transferListOverride } from "./transferlist-override";
 import { xmlRequestOverride } from "./common-override/xmlRequest-override";
+import { futHomeOverride } from "./futhome-override";
+import { popupOverride } from "./popup-override";
+import { binPopUpOverride } from "./binpopup-override";
 
 export const initOverrides = () => {
   xmlRequestOverride();
@@ -19,5 +22,8 @@ export const initOverrides = () => {
   playerViewPanelOverride();
   sbcViewOverride();
   transferListOverride();
+  futHomeOverride();
+  popupOverride();
+  binPopUpOverride();
   overrideStyle();
 };

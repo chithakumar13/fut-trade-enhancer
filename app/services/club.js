@@ -3,31 +3,32 @@ import {
   downloadCsv,
   wait,
   hideLoader,
-  showLoader
-} from '../utils/commonUtil'
-import { getConceptPlayers } from '../services/conceptplayer'
-import { MAX_CLUB_SEARCH } from '../app.constants'
+  showLoader,
+} from "../utils/commonUtil";
+import { getConceptPlayers } from "../services/conceptplayer";
+import { MAX_CLUB_SEARCH } from "../app.constants";
+import { getUserPlatform } from "./user";
 
 export const getSquadPlayerIds = () => {
   return new Promise((resolve, reject) => {
-    const squadPlayerIds = new Set()
+    const squadPlayerIds = new Set();
     getAllClubPlayers(true).then((squadMembers) => {
       squadMembers.forEach((member) => {
-        if (member.loans < 0) squadPlayerIds.add(member.resourceId)
-      })
-      resolve(squadPlayerIds)
-    })
-  })
-}
+        if (member.loans < 0) squadPlayerIds.add(member.resourceId);
+      });
+      resolve(squadPlayerIds);
+    });
+  });
+};
 
 export const getAllClubPlayers = function (filterLoaned, playerId) {
   return new Promise((resolve, reject) => {
-    const searchCriteria = new viewmodels.BucketedItemSearch().searchCriteria
+    const searchCriteria = new viewmodels.BucketedItemSearch().searchCriteria;
     if (playerId) {
-      searchCriteria.defId = [playerId]
+      searchCriteria.defId = [playerId];
     }
-    searchCriteria.count = MAX_CLUB_SEARCH
-    let gatheredSquad = []
+    searchCriteria.count = MAX_CLUB_SEARCH;
+    let gatheredSquad = [];
 
     const getAllSquadMembers = () => {
       getClubSquad(searchCriteria).observe(
@@ -36,110 +37,111 @@ export const getAllClubPlayers = function (filterLoaned, playerId) {
           gatheredSquad = [
             ...response.data.items.filter(
               (item) => !filterLoaned || item.loans < 0
-            )
-          ]
+            ),
+          ];
           if (response.status !== 400 && !response.data.retrievedAll) {
-            searchCriteria.offset += searchCriteria.count
-            await wait(1)
-            getAllSquadMembers()
+            searchCriteria.offset += searchCriteria.count;
+            await wait(1);
+            getAllSquadMembers();
           } else {
-            resolve(gatheredSquad)
+            resolve(gatheredSquad);
           }
         }
-      )
-    }
-    getAllSquadMembers()
-  })
-}
+      );
+    };
+    getAllSquadMembers();
+  });
+};
 
 export const getPlayersForSbc = async (playerIds) => {
-  const players = {}
-  await getAllClubPlayers(true) // Load All Players once to avoid individual network calls
+  const players = {};
+  await getAllClubPlayers(true); // Load All Players once to avoid individual network calls
   for (const playerId in playerIds) {
-    const parsedPlayerId = parseInt(playerId, 10)
+    const parsedPlayerId = parseInt(playerId, 10);
     let playerInfo = (await getAllClubPlayers(true, parsedPlayerId)).find(
       (player) => player.resourceId === parsedPlayerId
-    )
+    );
     if (!playerInfo) {
-      await wait(1)
+      await wait(1);
       playerInfo = (await getConceptPlayers(parsedPlayerId)).find(
         (player) => player.resourceId === parsedPlayerId
-      )
+      );
     }
-    players[playerId] = playerInfo
-    await wait(1.5)
+    players[playerId] = playerInfo;
+    await wait(1.5);
   }
-  return players
-}
+  return players;
+};
 
 const getClubSquad = (searchCriteria) => {
-  return services.Item.searchClub(searchCriteria)
-}
+  return services.Item.searchClub(searchCriteria);
+};
 
 const downloadClub = async () => {
-  showLoader()
-  let squadMembers = await getAllClubPlayers()
-  squadMembers = squadMembers.sort((a, b) => b.rating - a.rating)
+  showLoader();
+  let squadMembers = await getAllClubPlayers();
+  squadMembers = squadMembers.sort((a, b) => b.rating - a.rating);
+  const platform = getUserPlatform();
 
-  let csvContent = ''
+  let csvContent = "";
   const headers =
-    'Player Name,Rating,Rare,Position,Nation,Leagure,Club,Price Range,Bought For,Discard Value,Contract Left,IsUntradable,IsLoaned'
-  csvContent += headers + '\r\n'
+    "Player Name,Rating,Rare,Position,Nation,Leagure,Club,Price Range,Bought For,Discard Value,Contract Left,IsUntradable,IsLoaned";
+  csvContent += headers + "\r\n";
   for (const squadMember of squadMembers) {
-    let rowRecord = ''
-    rowRecord += squadMember._staticData.name + ','
-    rowRecord += squadMember.rating + ','
+    let rowRecord = "";
+    rowRecord += squadMember._staticData.name + ",";
+    rowRecord += squadMember.rating + ",";
     if (ItemRarity[squadMember.rareflag]) {
       rowRecord += !squadMember.rareflag
-        ? 'COMMON,'
-        : ItemRarity[squadMember.rareflag] + ','
+        ? "COMMON,"
+        : ItemRarity[squadMember.rareflag] + ",";
     } else {
-      rowRecord += ','
+      rowRecord += ",";
     }
     rowRecord +=
       UTLocalizationUtil.positionIdToName(
         squadMember.preferredPosition,
         services.Localization
-      ) + ','
+      ) + ",";
     rowRecord +=
       UTLocalizationUtil.nationIdToName(
         squadMember.nationId,
         services.Localization
-      ) + ','
+      ) + ",";
     rowRecord +=
       UTLocalizationUtil.leagueIdToName(
         squadMember.leagueId,
         services.Localization
-      ) + ','
+      ) + ",";
     rowRecord +=
       UTLocalizationUtil.teamIdToAbbr15(
         squadMember.teamId,
         services.Localization
-      ) + ','
+      ) + ",";
     if (squadMember._itemPriceLimits) {
       rowRecord +=
-        'Min: ' +
+        "Min: " +
         squadMember._itemPriceLimits.minimum +
-        ' Max: ' +
+        " Max: " +
         squadMember._itemPriceLimits.maximum +
-        ','
+        ",";
     } else {
-      rowRecord += ','
+      rowRecord += ",";
     }
-    rowRecord += squadMember.lastSalePrice + ','
-    rowRecord += squadMember.discardValue + ','
-    rowRecord += squadMember.contract + ','
-    rowRecord += squadMember.untradeable + ','
-    rowRecord += (squadMember.loans >= 0) + ','
+    rowRecord += squadMember.lastSalePrice + ",";
+    rowRecord += squadMember.discardValue + ",";
+    rowRecord += squadMember.contract + ",";
+    rowRecord += squadMember.untradeable + ",";
+    rowRecord += (squadMember.loans >= 0) + ",";
 
-    csvContent += rowRecord + '\r\n'
+    csvContent += rowRecord + "\r\n";
   }
-  const club = services.User.getUser().getSelectedPersona().getCurrentClub()
-  downloadCsv(csvContent, club.name)
+  const club = services.User.getUser().getSelectedPersona().getCurrentClub();
+  downloadCsv(csvContent, club.name);
 
-  hideLoader()
-}
+  hideLoader();
+};
 
-addBtnListner('#downloadClub', async function () {
-  await downloadClub()
-})
+addBtnListner("#downloadClub", async function () {
+  await downloadClub();
+});

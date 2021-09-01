@@ -1,14 +1,14 @@
-const lookUp = new Map()
+const lookUp = new Map();
 
 export const setValue = (key, value) => {
-  lookUp.set(key, value)
-}
+  lookUp.set(key, value);
+};
 
 export const getValue = (key) => {
-  const value = lookUp.get(key)
+  const value = lookUp.get(key);
   if (value && value.expiryTimeStamp && value.expiryTimeStamp < Date.now()) {
-    lookUp.delete(key)
-    return null
+    lookUp.delete(key);
+    return null;
   }
-  return value
-}
+  return value;
+};

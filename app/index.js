@@ -1,14 +1,17 @@
 import { initOverrides } from "./function-overrides";
+import { setValue } from "./services/repository";
 
-window.initScript = function () {
+const initScript = function () {
+  let isAllLoaded = false;
   if (services.Localization) {
-    window.hasLoadedAll = true;
+    setValue("EnhancerSettings", {});
+    isAllLoaded = true;
   }
 
-  if (window.hasLoadedAll) {
+  if (isAllLoaded) {
     initOverrides();
   } else {
-    window.setTimeout(initScript, 1000);
+    setTimeout(initScript, 1000);
   }
 };
 
