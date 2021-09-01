@@ -1,9 +1,9 @@
 export const getUserPlatform = () => {
   if (services.User.getUser().getSelectedPersona().isPlaystation) {
-    return 'ps'
+    return "ps";
   } else if (services.User.getUser().getSelectedPersona().isXbox) {
-    return 'xbox'
+    return "xbox";
   } else {
-    return 'pc'
+    return "pc";
   }
-}
+};

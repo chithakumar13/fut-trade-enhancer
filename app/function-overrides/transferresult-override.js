@@ -22,7 +22,7 @@ const appendDuplicateTag = (resourceId, rootElement) => {
 
 const formRequestPayLoad = (e, platform) => {
   const {
-    id: marketId,
+    id,
     resourceId,
     _auction: { buyNowPrice, tradeId: auctionId, expires: expiresOn },
     _metaData: { id: assetId, skillMoves, weakFoot } = {},
@@ -30,7 +30,7 @@ const formRequestPayLoad = (e, platform) => {
     _staticData: { firstName, knownAs, lastName, name } = {},
     nationId,
     leagueId,
-    type,
+    rareflag,
   } = e.getData();
 
   const expireDate = new Date();
@@ -39,12 +39,11 @@ const formRequestPayLoad = (e, platform) => {
     resourceId,
     price: buyNowPrice,
     expiresOn: expireDate,
-    marketId,
-    platform,
-    type,
+    id: id + "",
+    assetId: assetId + "_" + platform + "_" + rareflag,
     auctionId,
-    assetId,
     year: 21,
+    updatedOn: new Date(),
   };
   const playerPayLoad = {
     _id: resourceId,
@@ -56,6 +55,7 @@ const formRequestPayLoad = (e, platform) => {
     assetId,
     attributes: _attributes,
     year: 21,
+    rareflag,
   };
 
   return { trackPayLoad, playerPayLoad };
@@ -67,6 +67,7 @@ export const transferResultOverride = () => {
     const platform = getUserPlatform();
     const auctionPrices = [];
     const players = [];
+    const enhancerSetting = getValue("EnhancerSettings");
     void 0 === o && (o = 0),
       this.listRows.forEach(function (e) {
         let t;
@@ -74,41 +75,46 @@ export const transferResultOverride = () => {
           o === ((t = e.getData()) === null || void 0 === t ? void 0 : t.id);
         e.render(i);
         const rootElement = jQuery(e.getRootElement());
-
         const {
           type,
           contract,
           resourceId,
-          _auction: { buyNowPrice },
+          _auction: { buyNowPrice, currentBid, startingBid },
         } = e.getData();
-
         const retryCount = 5;
         const auctionElement = rootElement.find(".auction");
-        if (
-          auctionElement &&
-          type === "player" &&
-          !auctionElement.attr("style")
-        ) {
+        let addFutBinPrice = enhancerSetting["idFutBinPrice"];
+        if (auctionElement.attr("style")) {
+          auctionElement.removeAttr("style");
+          auctionElement.addClass("hideauction");
+          addFutBinPrice = true;
+        }
+        if (auctionElement && type === "player") {
           rootElement.find(".ut-item-player-status--loan").text(contract);
           const { trackPayLoad, playerPayLoad } = formRequestPayLoad(
             e,
             platform
           );
+          const bidPrice = enhancerSetting["idBidBargain"]
+            ? currentBid || startingBid
+            : null;
           auctionPrices.push(trackPayLoad);
           players.push(playerPayLoad);
           appendDuplicateTag(resourceId, rootElement);
-          fetchPricesFromFutBin(resourceId, retryCount).then((res) => {
-            if (res.status === 200) {
-              appendFutBinPrice(
-                resourceId,
-                buyNowPrice,
-                platform,
-                res.responseText,
-                auctionElement,
-                rootElement
-              );
-            }
-          });
+          addFutBinPrice &&
+            fetchPricesFromFutBin(resourceId, retryCount).then((res) => {
+              if (res.status === 200) {
+                appendFutBinPrice(
+                  resourceId,
+                  buyNowPrice,
+                  bidPrice,
+                  platform,
+                  res.responseText,
+                  auctionElement,
+                  rootElement
+                );
+              }
+            });
         }
         n.__itemList.appendChild(e.getRootElement());
       }),

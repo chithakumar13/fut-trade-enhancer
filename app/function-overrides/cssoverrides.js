@@ -1,5 +1,5 @@
 export const overrideStyle = () => {
-  const style = document.createElement('style')
+  const style = document.createElement("style");
   style.innerText = `
     .player-stats-data-component ul { 
       display: grid;   
@@ -117,6 +117,32 @@ export const overrideStyle = () => {
     .phone .auction.show {
       right: 2rem !important;
     }
-    `
-  document.head.appendChild(style)
-}
+    .enhancer-option-header {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .enhancer-toggle {
+      width: 49% !important;
+    }
+    .phone .enhancer-toggle {
+      width: 100% !important;
+    }
+    .enhancer-toggle .ut-toggle-cell-view {
+      justify-content: center;
+    }
+    .hide {
+      display: none;
+    }
+    .hideauction .auctionValue {
+      display: none;
+    }
+    .hideauction .auction-state {
+      display: none;
+    }
+    .hideauction .futbinprice{
+      display: unset
+    }
+    `;
+  document.head.appendChild(style);
+};
