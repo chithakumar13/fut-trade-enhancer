@@ -15,7 +15,7 @@ export const initSearchOptionView = () => {
     if (isSearchViewLoaded && jQuery(".search-prices").length) {
       if (jQuery(".search-prices").first().length) {
         {
-          if (!jQuery("#ab_page_number").length) {
+          if (!jQuery(".enhancer-option-header").length) {
             jQuery(".search-prices").first().append(`<div> 
                             <div class="enhancer-option-header"> 
                                    <h1>Enhancer Options:</h1>

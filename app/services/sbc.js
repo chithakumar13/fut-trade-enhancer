@@ -117,10 +117,10 @@ const getSbcPLayer = async () => {
 
   await Promise.all(promisesToWait);
   // findAllSbcs(`https://www.futbin.com/stc/squads?player=30109&page=1`);
-  console.log(count, "error count", sbcLookup);
+  // console.log(count, "error count", sbcLookup);
 
   for (const [key, value] of sbcLookup) {
-    console.log(key + " = " + value.length);
+    // console.log(key + " = " + value.length);
   }
 };
 

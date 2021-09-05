@@ -6,3 +6,4 @@ export const MAX_MARKET_SEARCH = 20;
 export const idFutBinPrice = "elem_" + generateId(15);
 export const idBidBargain = "elem_" + generateId(15);
 export const idHideBinPop = "elem_" + generateId(15);
+export const idResetFutBin = "elem_" + generateId(15);

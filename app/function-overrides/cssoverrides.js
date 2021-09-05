@@ -134,15 +134,51 @@ export const overrideStyle = () => {
     .hide {
       display: none;
     }
-    .hideauction .auctionValue {
-      display: none;
-    }
+    .hideauction .auctionValue,
     .hideauction .auction-state {
       display: none;
+    } 
+    .hideauction .futbinprice,
+    .auction.hideauction,
+    .show {
+      display: unset !important
     }
-    .hideauction .futbinprice{
-      display: unset
+    .relistFut {
+      margin-right: 10px;
+      display: none;
     }
+    .button--loading .button__text {
+      visibility: hidden;
+      opacity: 0;
+    }
+    .button-spinner {
+      position: relative;
+    }
+    .button--loading::after {
+      content: "";
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+      border: 4px solid transparent;
+      border-top-color: #29ffc9;
+      border-radius: 50%;
+      animation: button-loading-spinner 1s ease infinite;
+    }
+    
+    @keyframes button-loading-spinner {
+      from {
+        transform: rotate(0turn);
+      }
+    
+      to {
+        transform: rotate(1turn);
+      }
+    }    
     `;
   document.head.appendChild(style);
 };

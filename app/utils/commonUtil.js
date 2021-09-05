@@ -31,6 +31,14 @@ export const wait = async (seconds = 1) => {
   );
 };
 
+export const getRandWaitTime = (range) => {
+  if (range) {
+    const [start, end] = range.split("-").map((a) => parseInt(a));
+    return Math.round(Math.random() * (end - start) + start);
+  }
+  return 0;
+};
+
 export const showLoader = () => {
   jQuery(".ut-click-shield").addClass("showing");
   jQuery(".loaderIcon ").css("display", "block");
@@ -67,4 +75,10 @@ export const generateId = (length) => {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
+};
+
+export const createElementFromHTML = (htmlString) => {
+  var div = document.createElement("div");
+  div.innerHTML = htmlString.trim();
+  return div.firstChild;
 };

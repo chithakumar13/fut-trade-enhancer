@@ -80,6 +80,7 @@ export const transferResultOverride = () => {
           contract,
           resourceId,
           _auction: { buyNowPrice, currentBid, startingBid },
+          untradeable,
         } = e.getData();
         const retryCount = 5;
         const auctionElement = rootElement.find(".auction");
@@ -87,7 +88,7 @@ export const transferResultOverride = () => {
         if (auctionElement.attr("style")) {
           auctionElement.removeAttr("style");
           auctionElement.addClass("hideauction");
-          addFutBinPrice = true;
+          addFutBinPrice = !untradeable;
         }
         if (auctionElement && type === "player") {
           rootElement.find(".ut-item-player-status--loan").text(contract);
