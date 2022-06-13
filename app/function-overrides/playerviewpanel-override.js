@@ -138,52 +138,56 @@ export const playerViewPanelOverride = () => {
         const panelDisplayStyle = $(".more").css("display");
         if ($(".more").length) {
           if (!$(`#${idViewFutBin}`).length) {
-            $(
-              generateButton(
-                idViewFutBin,
-                "View on FUTBIN",
-                async () => {
-                  const selectedPlayer = getValue("selectedPlayer");
-                  const playerUrl = await getFutbinPlayerUrl(selectedPlayer);
-                  if (!playerUrl) {
-                    sendUINotification(
-                      "Unable to get futbin url",
-                      UINotificationType.NEGATIVE
-                    );
-                  }
-                  window.open(playerUrl, "_blank");
-                },
-                "accordian"
+            if (!getValue("EnhancerSettings")["idHideViewFUTBIN"]) {
+              $(
+                generateButton(
+                  idViewFutBin,
+                  "View on FUTBIN",
+                  async () => {
+                    const selectedPlayer = getValue("selectedPlayer");
+                    const playerUrl = await getFutbinPlayerUrl(selectedPlayer);
+                    if (!playerUrl) {
+                      sendUINotification(
+                        "Unable to get futbin url",
+                        UINotificationType.NEGATIVE
+                      );
+                    }
+                    window.open(playerUrl, "_blank");
+                  },
+                  "accordian"
+                )
               )
-            )
-              .css("display", panelDisplayStyle)
-              .insertAfter($(".more"));
-            $(
-              generateButton(
-                idSearchMinBin,
-                "Calculate Min BIN",
-                async () => {
-                  const btnContxt = $(`#${idSearchMinBin}`);
-                  btnContxt.prop("disabled", true);
-                  btnContxt.text(`Calculate Min BIN`);
-                  const selectedPlayer = getValue("selectedPlayer");
-                  sendUINotification("Calculating Min BIN ....");
-                  const playerMin = await calculatePlayerMinBin(selectedPlayer);
-                  btnContxt.prop("disabled", false);
-                  if (!playerMin) {
-                    sendUINotification(
-                      "Unable to calculate min bin",
-                      UINotificationType.NEGATIVE
-                    );
-                    return;
-                  }
-                  btnContxt.text(`Average Min BIN - (${playerMin})`);
-                },
-                "accordian"
+                .css("display", panelDisplayStyle)
+                .insertAfter($(".more"));
+            }
+            if (!getValue("EnhancerSettings")["idHideSearchMinBin"]) {
+              $(
+                generateButton(
+                  idSearchMinBin,
+                  "Calculate Min BIN",
+                  async () => {
+                    const btnContxt = $(`#${idSearchMinBin}`);
+                    btnContxt.prop("disabled", true);
+                    btnContxt.text(`Calculate Min BIN`);
+                    const selectedPlayer = getValue("selectedPlayer");
+                    sendUINotification("Calculating Min BIN ....");
+                    const playerMin = await calculatePlayerMinBin(selectedPlayer);
+                    btnContxt.prop("disabled", false);
+                    if (!playerMin) {
+                      sendUINotification(
+                        "Unable to calculate min bin",
+                        UINotificationType.NEGATIVE
+                      );
+                      return;
+                    }
+                    btnContxt.text(`Average Min BIN - (${playerMin})`);
+                  },
+                  "accordian"
+                )
               )
-            )
-              .css("display", panelDisplayStyle)
-              .insertAfter($(".more"));
+                .css("display", panelDisplayStyle)
+                .insertAfter($(".more"));
+            }
           }
           if ($(".panelActions").length && !$("#saleAfterTax").length) {
             $(
